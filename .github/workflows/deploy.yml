@@ -1,0 +1,71 @@
+name: Deploy Daily Shop to InfinityFree
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # GitHub se project lena
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # PHP setup
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, xml, ctype, fileinfo, pdo_mysql, zip, bcmath
+          tools: composer
+
+      # Laravel dependencies
+      - name: Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      # Node setup
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Vue dependencies
+      - name: Install NPM dependencies
+        run: npm install
+
+      # Vue production build
+      - name: Build Vue
+        run: npm run build
+
+      # InfinityFree ke liye files prepare karna
+      - name: Prepare deployment
+        run: |
+          mkdir deploy
+
+          rsync -a \
+            --exclude=".git" \
+            --exclude=".github" \
+            --exclude="node_modules" \
+            --exclude=".env" \
+            --exclude="public" \
+            ./ deploy/
+
+          cp -a public/. deploy/
+
+          sed -i "s#__DIR__.'/../vendor/autoload.php'#__DIR__.'/vendor/autoload.php'#" deploy/index.php
+          sed -i "s#__DIR__.'/../bootstrap/app.php'#__DIR__.'/bootstrap/app.php'#" deploy/index.php
+
+      # InfinityFree par upload
+      - name: Upload to InfinityFree
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./deploy/
+          server-dir: /htdocs/
