@@ -532,53 +532,6 @@ const routes = [
     },
 
     // =====================================================
-    // VENDORS
-    // =====================================================
-    {
-        path: "/admin/vendors",
-        name: "vendorIndex",
-        component: () => import("./pages/venders/index.vue"),
-        meta: {
-            layout: AdminLayout,
-            auth: true,
-            Permissions: "Show Vendor",
-        },
-    },
-
-    {
-        path: "/admin/vendors/create",
-        name: "vendorCreate",
-        component: () => import("./pages/venders/create.vue"),
-        meta: {
-            layout: AdminLayout,
-            auth: true,
-            Permissions: "Add Vendor",
-        },
-    },
-
-    {
-        path: "/admin/vendors/:id/edit",
-        name: "vendorEdit",
-        component: () => import("./pages/venders/edit.vue"),
-        meta: {
-            layout: AdminLayout,
-            auth: true,
-            Permissions: "Edit Vendor",
-        },
-    },
-
-    {
-        path: "/admin/vendors/:id/details",
-        name: "vendorDetails",
-        component: () => import("./pages/venders/detail.vue"),
-        meta: {
-            layout: AdminLayout,
-            auth: true,
-            Permissions: "View Vendor",
-        },
-    },
-
-    // =====================================================
     // ADMIN ORDERS
     // =====================================================
     {
