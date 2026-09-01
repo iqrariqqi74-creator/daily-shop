@@ -176,7 +176,7 @@
 
 <script>
 import axios from "axios";
-import VueDatePicker from "@vuepic/vue-datepicker";
+import { VueDatePicker } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { format } from "date-fns";
 
